@@ -1,6 +1,8 @@
-var express = require('express')
-var router = express.Router()
-var cache = require('memory-cache');
+"use strict";
+import express from 'express';
+// var express = require('express')
+const router = express.Router()
+import cache from 'memory-cache';
 
 // Returns an array of Statistics. If no stats recorded for a particular metric,
 // an empty array will be returned. Note, multple 'stat' and 'metric' params can be specified.
@@ -20,7 +22,7 @@ router.get('/', function (req, res) {
 /* --------------------- PRIVATE FUNCTIONS --------------------- */
 
 function updateMinCalc(input, newValue) {
-  var min = parseFloat(input);
+  let min = parseFloat(input);
   if (typeof input === 'undefined' || newValue < input) {
     min = newValue;
   }
@@ -28,7 +30,7 @@ function updateMinCalc(input, newValue) {
 }
 
 function updateMaxCalc(input, newValue) {
-  var max = parseFloat(input);
+  let max = parseFloat(input);
   if (typeof input === 'undefined' || newValue > input) {
     max = newValue;
   }
@@ -37,7 +39,7 @@ function updateMaxCalc(input, newValue) {
 }
 
 function updateAvgCalc(input) {
-  var sum = input.reduce((acc, val) => parseFloat(acc) + parseFloat(val));
+  const sum = input.reduce((acc, val) => parseFloat(acc) + parseFloat(val));
   return sum / input.length;
 }
 
@@ -64,7 +66,7 @@ function isWithinTimeRange(input, query) {
 }
 
 function expandParam(query, key) {
-  var output = [];
+  let output = [];
   // If multiple 'metrics' query params are defined, they will be bundled into an array
   if (Array.isArray(query[key])) {
     output = output.concat(query[key]);
@@ -81,11 +83,11 @@ function buildMetricsParam(query) {
 }
 
 function buildStatsParam(query) {
-  var stats = expandParam(query, 'stat');
+  const stats = expandParam(query, 'stat');
 
   // We only support certain types of stat calculations
-  var output = {};
-  var allowedStats = ['min', 'max', 'average'];
+  const output = {};
+  const allowedStats = ['min', 'max', 'average'];
   stats.filter((key) => allowedStats.indexOf(key) !== -1)
       .forEach((key) => output[key] = true);
   return output;
@@ -100,13 +102,13 @@ function buildStatsParam(query) {
  * @param  {string} query.fromDateTime - ISO formatted. ex: 2015-09-01T16:00:01.000Z
  */
 function calculateStats(query) {
-  var keys = Object.keys(query|| {});
+  const keys = Object.keys(query|| {});
   // Metrics are properties like "precipitation", "temperature"
-  var metrics = buildMetricsParam(query);
+  const metrics = buildMetricsParam(query);
   // Stats are things like min, max, average.
   // Detect which stats we are interested in, since we only support a few specific actions.
-  var stats = buildStatsParam(query);
-  var areDatesRestricted = false;
+  const stats = buildStatsParam(query);
+  let areDatesRestricted = false;
   if (query.fromDateTime) {
     areDatesRestricted = true;
     query.fromDateTime = Date.parse(query.fromDateTime);
@@ -116,11 +118,11 @@ function calculateStats(query) {
     query.toDateTime = Date.parse(query.toDateTime);
   }
 
-  var runningStats = {};
-  var accumulatedDataPoints = {};
-  var timestamps = cache.keys();
-  for (timestamp of timestamps) {
-    var data = cache.get(timestamp);
+  const runningStats = {};
+  const accumulatedDataPoints = {};
+  const timestamps = cache.keys();
+  for (let timestamp of timestamps) {
+    const data = cache.get(timestamp);
     if (areDatesRestricted && !isWithinTimeRange(timestamp, query)) {
       continue;
     }
@@ -145,7 +147,7 @@ function calculateStats(query) {
     });
   }
 
-  var output = [];
+  const output = [];
   metrics.forEach((metric) => {
     if (stats.min && runningStats[metric]) {
       output.push([metric, 'min', runningStats[metric].min]);

@@ -1,8 +1,9 @@
-var express = require('express')
-var router = express.Router()
-var cache = require('memory-cache');
-var multer = require('multer'); // v1.0.5
-var upload = multer(); // for parsing multipart/form-data
+"use strict";
+import express from 'express';
+const router = express.Router();
+import cache from 'memory-cache';
+import multer from 'multer'; // v1.0.5
+const upload = multer(); // for parsing multipart/form-data
 
 /* Notes
  *
@@ -42,7 +43,7 @@ router.post('/', upload.array(),
 router.get('/:timestamp',
   validateTimestamp,
   function (req, res) {
-    var measurements = getMeasurements(req.formattedTimestamp);
+    const measurements = getMeasurements(req.formattedTimestamp);
     if (measurements) {
       res.send(measurements);
     } else {
@@ -97,13 +98,13 @@ router.delete('/:timestamp',
  * @return {String|null}        formatted datetime string
  */
 function validateTimestamp(req, res, next) {
-  var errorMessage = 'Must provide timestamp in ISO format';
-  var timestamp = req.params.timestamp || (Object.keys(req.body).length && req.body.timestamp);
+  const errorMessage = 'Must provide timestamp in ISO format';
+  const timestamp = req.params.timestamp || (Object.keys(req.body).length && req.body.timestamp);
   if (!timestamp) {
     reportError(res, errorMessage);
   }
 
-  var date = new Date(timestamp);
+  const date = new Date(timestamp);
   if (isNaN(date)) {
     reportError(res, errorMessage);
   }
@@ -117,8 +118,8 @@ function validateTimestamp(req, res, next) {
 }
 
 function validateNumericalData(req, res, next) {
-  var validationFailed = false;
-  for (field in req.body) {
+  let validationFailed = false;
+  for (const field in req.body) {
     if (field !== 'timestamp' && isNaN(req.body[field])) {
       validationFailed = true;
       break;
@@ -141,7 +142,7 @@ function validateMatchingTimestamps(req, res, next) {
 }
 
 function validateHasExistingData(req, res, next) {
-  var recordedData = !!getMeasurements(req.formattedTimestamp);
+  const recordedData = !!getMeasurements(req.formattedTimestamp);
   if (recordedData) {
     next();
   } else {
@@ -185,13 +186,13 @@ function updateMeasurement(timestamp, newData) {
 function getMeasurements(timestamp) {
   // This is a timestamp, not a date
   if (isTime(timestamp)) {
-    var measurement = cache.get(timestamp);
+    const measurement = cache.get(timestamp);
     return measurement ? measurement : null;
   }
 
   // Pull all data available for this date
-  var output = [];
-  for (key of cache.keys()) {
+  const output = [];
+  for (let key of cache.keys()) {
     if (key.indexOf(timestamp) !== -1) {
       output.push(cache.get(key));
     }

@@ -1,8 +1,10 @@
-var express = require('express');
-var cache = require('memory-cache');
-var bodyParser = require('body-parser');
-var measurements = require('./measurements');
-var stats = require('./stats');
+"use strict";
+import express from 'express';
+const router = express.Router();
+import cache from 'memory-cache';
+import bodyParser from 'body-parser';
+import measurements from './measurements';
+import stats from './stats';
 
 var app = express();
 app.use(bodyParser.json()); // for parsing application/json
@@ -31,32 +33,4 @@ app.use(function (err, req, res, next) {
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
-  cache.put( "2015-09-01T16:00:00.000Z" , {
-    "timestamp": "2015-09-01T16:00:00.000Z" ,
-    "temperature":  "27.1",
-    "dewPoint":  "16.9"
-  });
-  cache.put("2015-09-01T16:10:00.000Z", {
-    "timestamp": "2015-09-01T16:10:00.000Z",
-    "temperature":  "27.3"
-  });
-  cache.put("2015-09-01T16:20:00.000Z", {
-    "timestamp": "2015-09-01T16:20:00.000Z",
-    "temperature":  "27.5",
-    "dewPoint":  "17.1"
-  });
-  cache.put("2015-09-01T16:30:00.000Z", {
-    "timestamp": "2015-09-01T16:30:00.000Z",
-    "temperature":  "27.4",
-    "dewPoint":  "17.3"
-  });
-  cache.put("2015-09-01T16:40:00.000Z", {
-    "timestamp": "2015-09-01T16:40:00.000Z",
-    "temperature":  "27.2",
-  });
-  cache.put("2015-09-01T17:00:00.000Z", {
-    "timestamp": "2015-09-01T17:00:00.000Z",
-    "temperature":  "28.1",
-    "dewPoint":  "18.3"
-  });
 })
