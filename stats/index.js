@@ -1,6 +1,5 @@
 "use strict";
 import express from 'express';
-// var express = require('express')
 const router = express.Router()
 import cache from 'memory-cache';
 
@@ -54,7 +53,7 @@ function isWithinTimeRange(input, query) {
   const timestamp = Date.parse(input);
 
   if (query.fromDateTime && query.toDateTime) {
-    return withinRange = query.fromDateTime.valueOf() <= timestamp.valueOf() &&
+    return query.fromDateTime.valueOf() <= timestamp.valueOf() &&
         timestamp.valueOf() < query.toDateTime.valueOf();
   } else if (query.fromDateTime && query.fromDateTime.valueOf() <= timestamp.valueOf()) {
     return true;

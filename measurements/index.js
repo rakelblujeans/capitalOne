@@ -2,7 +2,7 @@
 import express from 'express';
 const router = express.Router();
 import cache from 'memory-cache';
-import multer from 'multer'; // v1.0.5
+import multer from 'multer';
 const upload = multer(); // for parsing multipart/form-data
 
 /* Notes
@@ -10,7 +10,7 @@ const upload = multer(); // for parsing multipart/form-data
  * - Measurements are always recorded using floating point numbers.
  * - Measurement recordings will ALWAYS include a timestamp.
  * - Measurement recordings MAY NOT ALWAYS include additional information.
- * - The additional information recorded may change over time, as different garden
+ * - The additional information recorded may evolve over time, as different garden
  *     instruments are used.
  *
  * Measurement Object Ex:
@@ -27,6 +27,9 @@ const upload = multer(); // for parsing multipart/form-data
 /* ---------------------- Routes ------------------------------*/
 
 // Sends a Measurement
+// NOTE: Will overwrite data without throwing an error, if data waas previously stored for this
+// timestamp
+// QUESTION: How to handle the case where the same field is defined multiple times in the data blob?
 router.post('/', upload.array(),
   validateTimestamp,
   validateNumericalData,
