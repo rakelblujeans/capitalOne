@@ -28,12 +28,13 @@ const upload = multer(); // for parsing multipart/form-data
 
 // Sends a Measurement
 // NOTE: Will overwrite data without throwing an error, if data waas previously stored for this
-// timestamp
+// timestamp.
 // QUESTION: How to handle the case where the same field is defined multiple times in the data blob?
 router.post('/', upload.array(),
   validateTimestamp,
   validateNumericalData,
   function(req, res) {
+    // In a production env, the data should be sanitized first
     saveMeasurement(req.formattedTimestamp, req.body);
     res.setHeader('Location', `/measurements/${req.formattedTimestamp}`);
     res.status(201).end();
@@ -63,6 +64,7 @@ router.put('/:timestamp', upload.array(),
   validateMatchingTimestamps,
   validateHasExistingData,
   function(req, res) {
+    // In a production env, the data should be sanitized first
     saveMeasurement(req.formattedTimestamp, req.body);
     res.status(204).end();
   }
@@ -76,6 +78,7 @@ router.patch('/:timestamp', upload.array(),
   validateMatchingTimestamps,
   validateHasExistingData,
   function (req, res) {
+    // In a production env, the data should be sanitized first
     updateMeasurement(req.formattedTimestamp, req.body);
     res.status(204).end();
   }
