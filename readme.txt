@@ -6,3 +6,5 @@ depend on an external module. For details: https://github.com/uber/npm-shrinkwra
 
 I switched to ES6 and included the babel dependencies here. My code could be more fully optimized
 to take advantage of ES6 features, but I'm running low on time here.
+
+Github: https://github.com/rakelblujeans/capitalOne
